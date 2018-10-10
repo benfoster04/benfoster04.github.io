@@ -9,4 +9,4 @@ Then be a normal human and open an issue
 
 ## Progress track
 - [X] Create an index.html file to initialise the github pages link
-- [] Kill myself lmao
+- [ ] Kill myself lmao
