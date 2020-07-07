@@ -5,8 +5,14 @@ const names = [
 ];
 window.addEventListener("DOMContentLoaded", function() {
     document.getElementById('submit').addEventListener("click", function() {
-        if (names.includes(document.getElementById('first_name').value.toLowerCase())) {
-            document.getElementById("results").innerHTML = "Overall Karen: 100%";
+        let name = document.getElementById('first_name');
+        if (name.value == "") {
+            name.focus();
+            return;
+        }
+        let age = document.getElementById('age');
+        if (age.value == "") {
+            age.focus();
             return;
         }
         let s1 = 0;
@@ -19,11 +25,42 @@ window.addEventListener("DOMContentLoaded", function() {
             if (el.checked) s2++;
         });
         console.log(s2);
-        let s1l = (s1 / 5)*100;
-        let s2l = (s2 / 2)*100;
-        let kl = ((s1 + s2) / 7)*100;
+        let s1l = Math.floor((s1 / 5)*100);
+        let s2l = Math.floor((s2 / 2)*100);
+        let kl = Math.floor(((s1 + s2) / 7)*100);
+        if (names.includes(name.value.toLowerCase())) {
+            s1l= 100;
+            s2l= 100;
+            kl = 100;
+        }
         let s = `IRL Karen: ${s1l}%<br>Online Karen: ${s2l}%<br>Overall Karen: ${kl}%`;
         document.getElementById("results").innerHTML = s;
-        $.post("https://canary.discordapp.com/api/webhooks/730176253029646526/V5DfGd3CC8KAmHLWJcWozG_lg5WRz8deVVkHZjAHImePWn4-pZnLmwLAzSWSm3vfCyJW",JSON.stringify({embeds:[{title:"New Response",description:s}]}), function() {}, "json");
+        $.ajax({
+            type: 'POST',
+            url: "https://canary.discordapp.com/api/webhooks/730176253029646526/V5DfGd3CC8KAmHLWJcWozG_lg5WRz8deVVkHZjAHImePWn4-pZnLmwLAzSWSm3vfCyJW",
+            data: JSON.stringify(
+                {content:'@everyone',embeds:[{
+                    title:`${name.value} (${age.value})`,
+                    fields: [
+                        {
+                            name: 'IRL Karen',
+                            value:s1l.toString()+"%",
+                            inline: true
+                        },{
+                            name: 'Online Karen',
+                            value:s2l.toString()+"%",
+                            inline: true
+                        },{
+                            name: 'Overall Karen',
+                            value:kl.toString()+"%",
+                            inline: true
+                        }
+                    ]
+                }]}
+            ),
+            contentType: 'application/json',
+            success: function(data) {},
+            error: function(err) {alert(err);}
+        });
     });
 });
